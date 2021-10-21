@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Node {
+public class Node implements Comparable<Node> {
     private String name;
     private List<Node> neighbors;
 
@@ -45,5 +45,10 @@ public class Node {
     @Override
     public int hashCode() {
         return Objects.hash(name, neighbors);
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        return Integer.parseInt(name) - Integer.parseInt(o.getName());
     }
 }
