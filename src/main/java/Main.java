@@ -56,7 +56,6 @@ public class Main {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < graph.getNodes().length; i++) {
                 sb.append(graph.getNodes()[i].getName() + " ");
-                int finalI = i;
                 Node currentNode = graph.getNodes()[i];
 
                 List<Edge> edgesFromCurrent = graph.getEdges().stream().filter(x -> x.getPrevious() == currentNode).collect(Collectors.toList());
