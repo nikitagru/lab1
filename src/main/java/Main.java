@@ -14,7 +14,6 @@ public class Main {
     }
 
     private static Graph yarnik(Graph graph) {
-        int firstNodeIndex = (int) (Math.random() * graph.getNodes().length);
         Node node = graph.getNodes()[0];
 
         Graph newGraph = new Graph();
@@ -68,9 +67,18 @@ public class Main {
                 sb.append("0" + "\n");
             }
             writer.append(sb.toString());
+            writer.append(String.valueOf(getGraphWeight(graph)));
             writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static int getGraphWeight(Graph graph) {
+        int result = 0;
+        for (Edge edge : graph.getEdges()) {
+            result += edge.getWeight();
+        }
+        return result;
     }
 }

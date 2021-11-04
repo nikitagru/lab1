@@ -47,9 +47,7 @@ public class Graph {
                     nodes.add(node);
                 }
                 int neighbourNum = Integer.parseInt(numbers[Integer.parseInt(numbers[i]) - 1 + j]);
-//                if (neighbourNum == 9) {
-//                    System.out.println();
-//                }
+
                 if (getNodeByName(String.valueOf(neighbourNum)) == null) {
                     Node node = new Node(numbers[Integer.parseInt(numbers[i]) - 1 + j]);
                     getNodeByName(String.valueOf(nodeCounter)).addNeighbors(node);
@@ -58,7 +56,6 @@ public class Graph {
                     getNodeByName(String.valueOf(nodeCounter)).addNeighbors(getNodeByName(String.valueOf(neighbourNum)));
                 }
 
-                int finalI = i;
                 int finalNodeCounter = nodeCounter;
 
                 Edge edge1 = edges.stream()
