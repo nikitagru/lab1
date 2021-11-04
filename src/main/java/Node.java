@@ -6,9 +6,6 @@ public class Node implements Comparable<Node> {
     private String name;
     private List<Node> neighbors;
 
-    public Node() {
-    }
-
     public Node(String name) {
         this.name = name;
         neighbors = new ArrayList<>();

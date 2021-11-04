@@ -1,55 +1,13 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
-    public static void main(String[] args) {
-        Graph graph = new Graph();
-        Node node1 = new Node();
-        Node node2 = new Node();
-        Node node3 = new Node();
-        Node node4 = new Node();
-        Node node5 = new Node();
-
-        node1.setName("1");
-        node2.setName("2");
-        node3.setName("3");
-        node4.setName("4");
-        node5.setName("5");
-
-        List<Node> node1Neigh = new ArrayList<>();
-        node1Neigh.add(node2);
-        node1Neigh.add(node3);
-        node1.setNeighbors(node1Neigh);
-
-        List<Node> node2Neigh = new ArrayList<>();
-        node2Neigh.add(node1);
-        node2Neigh.add(node3);
-        node2.setNeighbors(node2Neigh);
-
-        List<Node> node3Neigh = new ArrayList<>();
-        node3Neigh.add(node1);
-        node3Neigh.add(node4);
-        node3.setNeighbors(node3Neigh);
-
-        List<Node> node4Neigh = new ArrayList<>();
-        node4Neigh.add(node3);
-        node4.setNeighbors(node4Neigh);
-
-        Edge edge1 = new Edge(node1, node2, 25);
-        Edge edge2 = new Edge(node1, node3, 4);
-        Edge edge3 = new Edge(node2, node3, 0);
-        Edge edge4 = new Edge(node3, node4, 7);
-
-        List<Edge> edges = new ArrayList<>();
-        edges.add(edge1);
-        edges.add(edge2);
-        edges.add(edge3);
-        edges.add(edge4);
-
-        graph.setEdges(edges);
-        graph.setNodes(new Node[] {node1, node2, node3, node4, node5});
+    public static void main(String[] args) throws IOException {
+        File file = new File("in.txt");
+        Graph graph = new Graph(file);
 
         Graph newGraph = yarnik(graph);
         printResult(newGraph);
@@ -57,7 +15,7 @@ public class Main {
 
     private static Graph yarnik(Graph graph) {
         int firstNodeIndex = (int) (Math.random() * graph.getNodes().length);
-        Node node = graph.getNodes()[1];
+        Node node = graph.getNodes()[0];
 
         Graph newGraph = new Graph();
         List<Edge> edges = new ArrayList<>();

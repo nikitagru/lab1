@@ -5,9 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Graph {
-    private Node[] nodes;
+    private List<Node> nodes = new ArrayList<>();
     private List<Edge> edges = new ArrayList<>();
     private Node from;
     private Node to;
@@ -15,44 +16,60 @@ public class Graph {
     public Graph(File file) throws IOException {
         BufferedReader bfReader = new BufferedReader(new FileReader(file));
 
+        int count = Integer.parseInt(bfReader.readLine());
+
+        String[] numbers;
         String line = bfReader.readLine();
-        nodes = new Node[Integer.parseInt(line)];
 
-        for (int i = 0; i < nodes.length; i++) {
-            nodes[i] = new Node(String.valueOf(i + 1));
-        }
+        StringBuffer sb = new StringBuffer();
 
-        for (int i = 0; i < nodes.length; i++) {
+        while (line != null) {
+            sb.append(line + " ");
             line = bfReader.readLine();
-            for (int j = 0; j < nodes.length; j++) {
-                String[] inputs = line.split("\\s+");
-                if (Integer.parseInt(inputs[j]) != -32768) {
-                    int finalJ = j + 1;
-                    Node neighbor = Arrays.stream(nodes).filter(x -> x.getName().equals(String.valueOf(finalJ))).findFirst().get();
-                    nodes[i].addNeighbors(neighbor);
-                    edges.add(new Edge(nodes[i], neighbor, Integer.parseInt(inputs[j])));
-                }
-            }
         }
 
-        createDest(bfReader);
+        String numbersString = sb.toString();
+        numbersString = numbersString.replaceAll("\n", " ");
+        numbersString = numbersString.replaceAll("32767", "");
+        numbers = numbersString.split(" ");
+
+        int nodeCounter = 1;
+
+        for (int i = 0; i < numbers.length; i++) {
+            if (Integer.parseInt(numbers[i]) == count) {
+                break;
+            }
+            int link = Integer.parseInt(numbers[i]);
+            int gap = Integer.parseInt(numbers[i + 1]) - link;
+
+            for (int j = 0; j < gap; j = j + 2) {
+                if (nodes.size() < nodeCounter) {
+                    Node node = new Node(String.valueOf(nodeCounter));
+                    nodes.add(node);
+                }
+                int neighbourNum = Integer.parseInt(numbers[Integer.parseInt(numbers[i]) - 1 + j]);
+                if (nodes.size() < neighbourNum) {
+                    Node node = new Node(numbers[Integer.parseInt(numbers[i]) - 1 + j]);
+                    nodes.get(i).addNeighbors(node);
+                    nodes.add(node);
+                }
+
+                Edge edge = new Edge(nodes.get(i), nodes.get(neighbourNum - 1),
+                        Integer.parseInt(numbers[Integer.parseInt(numbers[i]) + j]));
+
+                edges.add(edge);
+            }
+
+            nodeCounter++;
+        }
     }
 
     public Graph() {
 
     }
 
-    private void createDest(BufferedReader reader) throws IOException {
-        String line = reader.readLine();
-        String finalLine1 = line;
-        this.from = Arrays.stream(nodes).filter(x -> x.getName().equals(finalLine1)).findFirst().get();
-        line = reader.readLine();
-        String finalLine = line;
-        this.to = Arrays.stream(nodes).filter(x -> x.getName().equals(finalLine)).findFirst().get();
-    }
-
     public Node[] getNodes() {
-        return nodes;
+        return nodes.toArray(Node[]::new);
     }
 
     public List<Edge> getEdges() {
@@ -68,7 +85,7 @@ public class Graph {
     }
 
     public void setNodes(Node[] nodes) {
-        this.nodes = nodes;
+        this.nodes = Arrays.stream(nodes).collect(Collectors.toList());
     }
 
     public void setEdges(List<Edge> edges) {
