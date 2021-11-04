@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        File file = new File("in.txt");
+        File file = new File("In3.txt");
         Graph graph = new Graph(file);
 
         Graph newGraph = yarnik(graph);
@@ -23,15 +23,12 @@ public class Main {
         nodes.add(node);
 
 
-        for (int i = 1; i < graph.getNodes().length; i++) {
-            List<Edge> nodeEdges = new ArrayList<>();
-            for (int k = 0; k < graph.getEdges().size(); k++) {
-                Edge edge = graph.getEdges().get(k);
-                if ((nodes.contains(edge.getPrevious()) && !nodes.contains(edge.getNext()))
-                        || (!nodes.contains(edge.getPrevious()) && nodes.contains(edge.getNext()))) {
-                    nodeEdges.add(edge);
-                }
-            }
+        while (nodes.size() < graph.getNodes().length) {
+            List<Edge> nodeEdges;
+
+            nodeEdges = graph.getEdges().stream()
+                    .filter(x -> (nodes.contains(x.getPrevious()) && !nodes.contains(x.getNext()))
+                            || (!nodes.contains(x.getPrevious()) && nodes.contains(x.getNext()))).collect(Collectors.toList());
 
 
             if (nodeEdges.size() != 0) {
@@ -46,13 +43,6 @@ public class Main {
                 edges.add(minEdge);
                 node = nextNode;
 
-            } else {
-                for (int j = 0; j < graph.getNodes().length; j++) {
-                    node = graph.getNodes()[j];
-                    if (!nodes.contains(node)) {
-                        break;
-                    }
-                }
             }
         }
 
@@ -63,17 +53,17 @@ public class Main {
     }
 
     private static void printResult(Graph graph) {
-        try(FileWriter writer = new FileWriter("out.txt", true)) {
+        try(FileWriter writer = new FileWriter("out.txt", false)) {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < graph.getNodes().length; i++) {
                 sb.append(graph.getNodes()[i].getName() + " ");
-                TreeSet<Node> nodeTreeSet = new TreeSet<>();
-                for (int j = 0; j < graph.getNodes()[i].getNeighbors().size(); j++) {
-                    nodeTreeSet.add(graph.getNodes()[i].getNeighbors().get(j));
-                }
+                int finalI = i;
+                Node currentNode = graph.getNodes()[i];
 
-                for (int j = 0; j < nodeTreeSet.size(); j++) {
-                    sb.append(nodeTreeSet.pollFirst().getName() + " ");
+                List<Edge> edgesFromCurrent = graph.getEdges().stream().filter(x -> x.getPrevious() == currentNode).collect(Collectors.toList());
+
+                for (int j = 0; j < edgesFromCurrent.size(); j++) {
+                    sb.append(edgesFromCurrent.get(j).getNext().getName() + " ");
                 }
                 sb.append("0" + "\n");
             }

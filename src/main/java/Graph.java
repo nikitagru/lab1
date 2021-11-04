@@ -41,23 +41,39 @@ public class Graph {
             }
             int link = Integer.parseInt(numbers[i]);
             int gap = Integer.parseInt(numbers[i + 1]) - link;
-
             for (int j = 0; j < gap; j = j + 2) {
                 if (nodes.size() < nodeCounter) {
                     Node node = new Node(String.valueOf(nodeCounter));
                     nodes.add(node);
                 }
                 int neighbourNum = Integer.parseInt(numbers[Integer.parseInt(numbers[i]) - 1 + j]);
-                if (nodes.size() < neighbourNum) {
+//                if (neighbourNum == 9) {
+//                    System.out.println();
+//                }
+                if (getNodeByName(String.valueOf(neighbourNum)) == null) {
                     Node node = new Node(numbers[Integer.parseInt(numbers[i]) - 1 + j]);
-                    nodes.get(i).addNeighbors(node);
+                    getNodeByName(String.valueOf(nodeCounter)).addNeighbors(node);
                     nodes.add(node);
+                } else {
+                    getNodeByName(String.valueOf(nodeCounter)).addNeighbors(getNodeByName(String.valueOf(neighbourNum)));
                 }
 
-                Edge edge = new Edge(nodes.get(i), nodes.get(neighbourNum - 1),
-                        Integer.parseInt(numbers[Integer.parseInt(numbers[i]) + j]));
+                int finalI = i;
+                int finalNodeCounter = nodeCounter;
 
-                edges.add(edge);
+                Edge edge1 = edges.stream()
+                        .filter(x -> (x.getPrevious().equals(getNodeByName(String.valueOf(finalNodeCounter)))
+                            && x.getNext().equals(getNodeByName(String.valueOf(neighbourNum))))
+                        || (x.getPrevious().equals(getNodeByName(String.valueOf(neighbourNum)))
+                            && x.getNext().equals(getNodeByName(String.valueOf(finalNodeCounter)))))
+                            .findFirst().orElse(null);
+
+                if (edge1 == null) {
+                    Edge edge = new Edge(getNodeByName(String.valueOf(nodeCounter)), getNodeByName(String.valueOf(neighbourNum)),
+                            Integer.parseInt(numbers[Integer.parseInt(numbers[i]) + j]));
+
+                    edges.add(edge);
+                }
             }
 
             nodeCounter++;
@@ -74,6 +90,11 @@ public class Graph {
 
     public List<Edge> getEdges() {
         return edges;
+    }
+
+    private Node getNodeByName(String name) {
+        System.out.println(name);
+        return nodes.stream().filter(x -> x.getName().equals(name)).findFirst().orElse(null);
     }
 
     public Node getFrom() {
